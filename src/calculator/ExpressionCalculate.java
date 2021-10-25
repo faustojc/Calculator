@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package calculator;
 
 import java.util.ArrayDeque;
@@ -22,6 +18,11 @@ public class ExpressionCalculate {
         return this.answer;
     }
     
+    /**
+    * Converting the arithmetic expression(Infix) into Postfix expression
+    * @param expression The expression inputted 
+    * @return The postfix expression
+    */
     private List<String> Postfix(String expression) {
         ArrayDeque<String> op = new ArrayDeque<>();
         List<String> result = new ArrayList<>();
@@ -68,6 +69,7 @@ public class ExpressionCalculate {
                 i = iter;
             }
         }
+        // Add the remaining operator(s) into the result
         while (!op.isEmpty()) {
             result.add(op.removeLast());
         }
@@ -90,11 +92,11 @@ public class ExpressionCalculate {
     }
     
     /**
-     * Pushing values to the result List String
+     * Pushing values to the result of List String
      * @param s The current StringBuilder in getting the index of expression
-     * @param input Using the input for iteration
-     * @param i Index for iterate the input
-     * @return The whole value or decimal value in the inputted expression
+     * @param expression Getting the lenght of the expression
+     * @param i Index for iterate the expression
+     * @return The whole value or decimal value of expression
      */
     private String pushValues(StringBuilder s, String input, int i) {
         StringBuilder sb = new StringBuilder();
@@ -112,10 +114,10 @@ public class ExpressionCalculate {
     }
 
     /**
-     * Returns the negative value in the inputted expression
-     * @param input The inputted expression
+     * Returns the negative value in the expression
+     * @param input The expression
      * @param i Index of getting the value
-     * @return The negative value in string from the inputted expression
+     * @return The negative value in string from the expression
      */
     private String pushNegative(String input, int i) {
         StringBuilder strB = new StringBuilder();
@@ -139,10 +141,10 @@ public class ExpressionCalculate {
     }
 
     /**
-     * Finds and return for the trigonometric ratio like sin, cos, tan along with the value
-     * @param input The inputted expression
-     * @param i Index of the {@code input}
-     * @return The Trigonometric ratio (Only sin, cos, and tan is supported)
+     * Finds and return for special operator like sin, cos, tan for trigonometry and the square root
+     * @param input The expression
+     * @param i Index of the {@code expression}
+     * @return The special operator
      */
     private String specialOp(String input, int i) {
         StringBuilder sb = new StringBuilder();
@@ -162,12 +164,18 @@ public class ExpressionCalculate {
     /**
      * Returns {@code true} if it's an operator
      * @param op The operator
-     * @return true if it's an operator, false if it's not
+     * @return true if and only if it's an operator
      */
     private static boolean isOperator(String op) {
         return (op.equals("+") || op.equals("-") || op.equals("*") || op.equals("/") || op.equals("^"));
     }
     
+    /**
+    * Returns the calculated trigonometry value
+    * @param trigo Getting the sin, cos, and tan
+    * @param num The value from the trigo
+    * @return The calculated trigo decimal value
+    */
     private double calcTrigo(String trigo, double num) {
         double value = 0;
         switch (trigo) {
@@ -179,9 +187,14 @@ public class ExpressionCalculate {
         return value;
     }
     
+    /**
+    * Calculating the postfix expression
+    * @param postfix The postfix expression
+    * @return The calculated value of the postfix expression
+    */
     private void calculateExpression(List<String> postfix) {
         ArrayDeque<Double> ad = new ArrayDeque<>();
-
+        
         for (int i = 0; i < postfix.size(); i++) {
             if (isOperator(postfix.get(i))) {
                 double val1 = ad.removeLast();
@@ -196,14 +209,16 @@ public class ExpressionCalculate {
                     default -> {break;}
                 }
             }
+            // Check if it's a trigo
             else if (postfix.get(i).contains("sin") || postfix.get(i).contains("cos") || postfix.get(i).contains("tan")) {
                 ad.addLast(calcTrigo(postfix.get(i), ad.removeLast()));
             }
+            // Check if it's a square root
             else if (postfix.get(i).contains("sqrt")) {
                 ad.addLast(Math.sqrt(ad.removeLast()));
             }
             else {
-                ad.addLast(Double.parseDouble(postfix.get(i)));
+                ad.addLast(Double.parseDouble(postfix.get(i))); // append the values to be calculated
             }
         }
         this.answer = new DecimalFormat("0.#####").format(ad.getLast());
