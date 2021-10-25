@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package calculator;
 
 import java.awt.Color;
@@ -10,7 +6,7 @@ import java.util.logging.Logger;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
 /**
- *
+ * Created with Netbeans using GUI builder
  * @author Fausto JC Boko
  */
 public class CalculatorGui extends javax.swing.JFrame {
@@ -459,15 +455,7 @@ public class CalculatorGui extends javax.swing.JFrame {
 
     private class FormListener implements java.awt.event.MouseListener {
         FormListener() {}
-        public void mouseClicked(java.awt.event.MouseEvent evt) {
-        }
-
-        public void mouseEntered(java.awt.event.MouseEvent evt) {
-        }
-
-        public void mouseExited(java.awt.event.MouseEvent evt) {
-        }
-
+        
         public void mousePressed(java.awt.event.MouseEvent evt) {
             if (evt.getSource() == jLabel1) {
                 CalculatorGui.this.jLabel1MousePressed(evt);
