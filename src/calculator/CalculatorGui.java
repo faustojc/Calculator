@@ -840,13 +840,16 @@ public class CalculatorGui extends javax.swing.JFrame {
 
     private void jLabelSquareRootMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabelSquareRootMousePressed
         jTextFieldExpression.setText(jTextFieldExpression.getText() + "sqrt(");
-        jLabel1.setBorder(CHANGE_PRESSED_BORDER);
+        jLabelSquareRoot.setBorder(CHANGE_PRESSED_BORDER);
     }//GEN-LAST:event_jLabelSquareRootMousePressed
 
     private void jLabelPowerMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabelPowerMouseReleased
         jLabelPower.setBorder(CHANGE_RELEASE_BORDER);
     }//GEN-LAST:event_jLabelPowerMouseReleased
     
+    private void jLabelSquareRootMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabelSquareRootMouseReleased
+        jLabelSquareRoot.setBorder(CHANGE_RELEASE_BORDER);
+    }//GEN-LAST:event_jLabelSquareRootMouseReleased
     
     //</editor-fold>
     // Variables declaration - do not modify//GEN-BEGIN:variables
