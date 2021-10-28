@@ -1,9 +1,9 @@
 package calculator;
 
+import java.text.DecimalFormat;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
-import java.text.DecimalFormat;
 
 /**
  *
@@ -18,44 +18,39 @@ public class ExpressionCalculate {
         return this.answer;
     }
     
-    /**
-    * Converting the arithmetic expression(Infix) into Postfix expression
-    * @param expression The expression inputted 
-    * @return The postfix expression
-    */
     private List<String> Postfix(String expression) {
         ArrayDeque<String> op = new ArrayDeque<>();
         List<String> result = new ArrayList<>();
         int i = 0;
         
         while (i < expression.length()) {
-            StringBuilder s = new StringBuilder(Character.toString(expression.charAt(i)));
+            String s = Character.toString(expression.charAt(i));
 
-            // check for the unary operator
-            if (s.toString().equals("s") || s.toString().equals("c") || s.toString().equals("t")) {
-                op.add(specialOp(expression, i));
+            // check for the urinary operator
+            if (s.equals("s") || s.equals("c") || s.equals("t")) {
+                op.add(pushValuesOrUrinaryOp(expression, i));
                 i = iter;
             }
             // check if it is operator
-            else if (checkOperatorAndPrec(s.toString()) > 0) {
-                while (!op.isEmpty() && checkOperatorAndPrec(op.getLast()) >= checkOperatorAndPrec(s.toString())) {
+            else if (checkOperatorAndPrec(s) > 0) {
+                while (!op.isEmpty() && checkOperatorAndPrec(op.getLast()) >= checkOperatorAndPrec(s)) {
                     result.add(op.removeLast());
                 }
-                op.addLast(s.toString());
+                op.addLast(s);
                 i++;
             }
             // check for negative or just an open parenthesis
-            else if (s.toString().equals("(")) {
+            else if (s.equals("(")) {
                 if (expression.charAt(i+1) == '-') {
                     result.add(pushNegative(expression, i));
                     i = iter;
                 }
                 else {
-                    op.addLast(s.toString());
+                    op.addLast(s);
                     i++;
                 }
             }
-            else if (s.toString().equals(")")) {
+            else if (s.equals(")")) {
                 String x = op.removeLast();
                 while (!x.equals("(")) {
                     result.add(x);
@@ -65,11 +60,10 @@ public class ExpressionCalculate {
             }
             // append the values 
             else {
-                result.add(pushValues(s, expression, i));
+                result.add(pushValuesOrUrinaryOp(expression, i));
                 i = iter;
             }
         }
-        // Add the remaining operator(s) into the result
         while (!op.isEmpty()) {
             result.add(op.removeLast());
         }
@@ -92,90 +86,62 @@ public class ExpressionCalculate {
     }
     
     /**
-     * Pushing values to the result of List String
-     * @param s The current StringBuilder in getting the index of expression
-     * @param expression Getting the lenght of the expression
+     * Get the value or the urinary operators to the resulta
+     * @param input The expression for iteration
      * @param i Index for iterate the expression
-     * @return The whole value or decimal value of expression
+     * @return The whole value, decimal value, or the urinary operator
      */
-    private String pushValues(StringBuilder s, String input, int i) {
+    private String pushValuesOrUrinaryOp(String input, int i) {
         StringBuilder sb = new StringBuilder();
-        StringBuilder sbToGet = s;
         iter = i;
+        String t = Character.toString(input.charAt(iter));
 
-        while (checkOperatorAndPrec(sbToGet.toString()) < 0 && !sbToGet.toString().equals(")") && !sbToGet.toString().equals("(")) {
-            sb.append(sbToGet);
+        while (checkOperatorAndPrec(t) < 0 && !t.equals(")") && !t.equals("(")) {
+            sb.append(t);
             iter++;
 
             if (iter >= input.length()) break;
-            else sbToGet = new StringBuilder(Character.toString(input.charAt(iter))); 
+            else t = Character.toString(input.charAt(iter)); 
         }
         return sb.toString();
     }
 
     /**
-     * Returns the negative value in the expression
-     * @param input The expression
+     * Returns the negative value in the inputted expression
+     * @param input The inputted expression
      * @param i Index of getting the value
-     * @return The negative value in string from the expression
+     * @return The negative value in string from the inputted expression
      */
     private String pushNegative(String input, int i) {
         StringBuilder strB = new StringBuilder();
         iter = i;
 
-        String tempS = Character.toString(input.charAt(++iter));
+        String temp = Character.toString(input.charAt(++iter));
         // Append the negative value first
-        strB.append(tempS).append(Character.toString(input.charAt(++iter))); 
+        strB.append(temp).append(Character.toString(input.charAt(++iter))); 
         iter++;
 
         if (checkOperatorAndPrec(Character.toString(input.charAt(iter))) < 0) {
-            tempS = Character.toString(input.charAt(iter));
+            temp = Character.toString(input.charAt(iter));
         }
 
-        while (checkOperatorAndPrec(tempS) < 0 && !tempS.equals(")")) {
-            strB.append(tempS);
-            tempS = Character.toString(input.charAt(++iter));
+        while (checkOperatorAndPrec(temp) < 0 && !temp.equals(")")) {
+            strB.append(temp);
+            temp = Character.toString(input.charAt(++iter));
         }
         iter++;
         return strB.toString();
-    }
-
-    /**
-     * Finds and return for special operator like sin, cos, tan for trigonometry and the square root
-     * @param input The expression
-     * @param i Index of the {@code expression}
-     * @return The special operator
-     */
-    private String specialOp(String input, int i) {
-        StringBuilder sb = new StringBuilder();
-        iter = i;
-        String t = Character.toString(input.charAt(iter));
-            
-        while (checkOperatorAndPrec(t) < 0 && !t.equals("(")) {
-            sb.append(t);
-            iter++;
-
-            if (iter >= input.length()) break;
-            else t = Character.toString(input.charAt(iter));
-        }
-        return sb.toString();
     }
     
     /**
      * Returns {@code true} if it's an operator
      * @param op The operator
-     * @return true if and only if it's an operator
+     * @return true if it's an operator, false if it's not
      */
     private static boolean isOperator(String op) {
         return (op.equals("+") || op.equals("-") || op.equals("*") || op.equals("/") || op.equals("^"));
     }
     
-    /**
-    * Returns the calculated trigonometry value
-    * @param trigo Getting the sin, cos, and tan
-    * @param num The value from the trigo
-    * @return The calculated trigo decimal value
-    */
     private double calcTrigo(String trigo, double num) {
         double value = 0;
         switch (trigo) {
@@ -187,14 +153,9 @@ public class ExpressionCalculate {
         return value;
     }
     
-    /**
-    * Calculating the postfix expression
-    * @param postfix The postfix expression
-    * @return The calculated value of the postfix expression
-    */
     private void calculateExpression(List<String> postfix) {
         ArrayDeque<Double> ad = new ArrayDeque<>();
-        
+
         for (int i = 0; i < postfix.size(); i++) {
             if (isOperator(postfix.get(i))) {
                 double val1 = ad.removeLast();
@@ -209,16 +170,14 @@ public class ExpressionCalculate {
                     default -> {break;}
                 }
             }
-            // Check if it's a trigo
             else if (postfix.get(i).contains("sin") || postfix.get(i).contains("cos") || postfix.get(i).contains("tan")) {
                 ad.addLast(calcTrigo(postfix.get(i), ad.removeLast()));
             }
-            // Check if it's a square root
             else if (postfix.get(i).contains("sqrt")) {
                 ad.addLast(Math.sqrt(ad.removeLast()));
             }
             else {
-                ad.addLast(Double.parseDouble(postfix.get(i))); // append the values to be calculated
+                ad.addLast(Double.parseDouble(postfix.get(i)));
             }
         }
         this.answer = new DecimalFormat("0.#####").format(ad.getLast());
